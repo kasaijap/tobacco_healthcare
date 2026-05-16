@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タバコ代、もったいなかった計算機</title>
+    <style>
+        /* 見た目を整えるCSS */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f8f5;
+            border-radius: 6px;
+            border-left: 5px solid #2ecc71;
+            text-align: left;
+            display: none; /* 最初は隠しておく */
+        }
+        .total-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚬 タバコ代、もったいなかった計算機</h1>
+    <p style="font-size: 0.9rem; color: #777;">吸った分のお金で何が買えたかを計算します</p>
+
+    <div class="input-group">
+        <label for="years">吸っていた年数 (年)</label>
+        <input type="number" id="years" placeholder="例: 5" min="0">
+    </div>
+
+    <div class="input-group">
+        <label for="cigarettes">1日の量 (本)</label>
+        <input type="number" id="cigarettes" placeholder="例: 20" min="0">
+    </div>
+
+    <div class="input-group">
+        <label for="price">タバコの値段 (1箱/20本あたり)</label>
+        <select id="price">
+            <option value="580">580円（メビウス・セブンスター等）</option>
+            <option value="600">600円（マールボロ等）</option>
+            <option value="620">620円（アメリカンスピリット等）</option>
+            <option value="700">700円（プレミアム系）</option>
+        </select>
+    </div>
+
+    <button onclick="calculateCost()">💸 計算する</button>
+
+    <div id="resultBox" class="result-box">
+        <div class="total-price">合計金額: <span id="totalCost">0</span>円</div>
+        <p id="alternativeItem" style="font-weight: bold; color: #2c3e50;"></p>
+    </div>
+</div>
+
+<script>
+    // 計算と結果表示を行うJavaScript
+    function calculateCost() {
+        // 画面に入力された値を取得
+        const years = parseFloat(document.getElementById('years').value);
+        const cigarettes = parseFloat(document.getElementById('cigarettes').value);
+        const pricePerPack = parseFloat(document.getElementById('price').value);
+
+        // 入力チェック（空欄があれば警告）
+        if (isNaN(years) || isNaN(cigarettes)) {
+            alert('年数と本数を入力してください！');
+            return;
+        }
+
+        // 1箱20本として、トータルの金額を計算
+        const totalDays = years * 365;
+        const totalPacks = (cigarettes / 20) * totalDays;
+        const totalCost = Math.round(totalPacks * pricePerPack);
+
+        // 金額に応じて「買えたもの」を判定（ここをおもしろネタに変えられます！）
+        let item = "";
+        if (totalCost < 10000) {
+            item = "ちょっと豪華な居酒屋で贅沢ができましたね。";
+        } else if (totalCost < 50000) {
+            item = "最新のワイヤレスイヤホンや、高級ブランドの服が買えました。";
+        } else if (totalCost < 200000) {
+            item = "最新のiPhoneや、国内の贅沢な温泉旅行に行けました。";
+        } else if (totalCost < 500000) {
+            item = "ハワイやヨーロッパへの海外旅行にいけました。";
+        } else if (totalCost < 2000000) {
+            item = "スペックの良い中古車、あるいは新車の軽自動車が余裕で買えました！";
+        } else {
+            item = "高級外車（ベンツやBMW）や、家を建てるための頭金になりました！";
+        }
+
+        // 結果を画面に表示
+        document.getElementById('totalCost').innerText = totalCost.toLocaleString(); // 3桁区切りのカンマを入れる
+        document.getElementById('alternativeItem').innerText = `👉 このお金があれば…\n${item}`;
+        document.getElementById('resultBox').style.display = 'block'; // 結果ボックスを表示
+    }
+</script>
+
+</body>
+</html>
